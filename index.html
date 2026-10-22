@@ -31,14 +31,7 @@ label{display:block;margin:14px 0 6px;font-weight:600}input,select{padding:11px;
 <button onclick="reset()">전체 공고 보기</button><div id="results"></div></section></main><footer>강사허브 체험용 데모 · 실제 문자 알림 및 자동 공고 수집 미연결</footer>
 <script>
 const ads=[
-['광주·전남','리더십·소통','공공기관 소통 교육 전문강사 모집 (예시)'],
-['광주·전남','청렴·윤리','지자체 청렴 교육 강사 모집 (예시)'],
-['서울·경기','리더십·소통','기업교육 리더십 특강 강사 모집 (예시)'],
-['전북','인권·복지','복지기관 인권교육 강사 모집 (예시)'],
-['제주','CS·친절','서비스 응대 교육 강사 모집 (예시)'],
-['부산·경남','취업·진로','대학 취업역량 교육 강사 모집 (예시)'],
-['광주·전남','취업·진로','고등학교 진로교육 외부강사 모집 (예시)'],
-['서울·경기','청렴·윤리','기업 윤리경영 교육 강사 모집 (예시)']
+
 ];
 function render(){const f=document.getElementById('field').value,r=document.getElementById('region').value;
 const filtered=ads.filter(a=>(!f||a[1]===f)&&(!r||a[0]===r));
