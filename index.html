@@ -58,4 +58,19 @@ fetch('jobs.json')
     render();
   })
   .catch(error => console.error('공고 불러오기 오류:', error));
+function connectJobLinks(jobs) {
+  const items = document.querySelectorAll('#results .item');
+  items.forEach((item, index) => {
+    const job = jobs[index];
+    if (!job || !job.url) return;
+
+    const link = document.createElement('a');
+    link.href = job.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = '원문 공고 확인하기 ↗';
+    item.appendChild(link);
+  });
+}
+
 </script></body></html>
