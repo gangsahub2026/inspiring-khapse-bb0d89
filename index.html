@@ -46,4 +46,16 @@ document.getElementById('results').innerHTML=filtered.length?filtered.map(a=>`<d
 function save(){const data={name:document.getElementById('nickname').value,field:document.getElementById('field').value,region:document.getElementById('region').value};localStorage.setItem('gangsahub_demo',JSON.stringify(data));document.getElementById('status').textContent='저장되었습니다. 아래에서 맞춤 예시 공고를 확인하세요.';render();document.getElementById('list').scrollIntoView({behavior:'smooth'});}
 function reset(){document.getElementById('field').value='';document.getElementById('region').value='';render();}
 try{const d=JSON.parse(localStorage.getItem('gangsahub_demo')||'{}');if(d.name)document.getElementById('nickname').value=d.name;if(d.field)document.getElementById('field').value=d.field;if(d.region)document.getElementById('region').value=d.region;}catch(e){}render();
+fetch('jobs.json')
+  .then(response => {
+    if (!response.ok) throw new Error('공고 파일을 찾을 수 없습니다.');
+    return response.json();
+  })
+  .then(jobs => {
+    ads.splice(0, ads.length,
+      ...jobs.map(job => ['광주·전남', '기타', job.title])
+    );
+    render();
+  })
+  .catch(error => console.error('공고 불러오기 오류:', error));
 </script></body></html>
