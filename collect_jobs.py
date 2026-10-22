@@ -63,4 +63,37 @@ def main():
         if "number" not in params:
             continue
 
-        if not any(word in title
+        if not any(word in title for word in KEYWORDS):
+                        continue
+            
+        if any(word in title for word in EXCLUDE):
+                        continue
+
+        if url in seen:
+            continue
+
+        seen.add(url)
+        jobs.append({
+            "title": title,
+            "url": url,
+            "source": "광주광역시교육청",
+            "status": "확인 필요"
+        })
+
+    with open("jobs.json", "w", encoding="utf-8") as file:
+        json.dump(jobs, file, ensure_ascii=False, indent=2)
+    print(f"수집된 모집공고: {len(jobs)}건")
+    print("jobs.json 저장 완료")
+if __name__ == "__main__":
+    main()
+
+    
+
+        
+
+        
+
+        
+
+        
+            
