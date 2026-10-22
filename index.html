@@ -56,6 +56,7 @@ fetch('jobs.json')
       ...jobs.map(job => ['광주·전남', '기타', job.title])
     );
     render();
+    connectJobLinks(jobs);
   })
   .catch(error => console.error('공고 불러오기 오류:', error));
 function connectJobLinks(jobs) {
