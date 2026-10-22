@@ -38,7 +38,7 @@ const filtered=ads.filter(a=>(!f||a[1]===f)&&(!r||a[0]===r));
 document.getElementById('results').innerHTML=filtered.length?filtered.map(a=>`<div class="item"><strong>${a[2]}</strong><p>${a[0]} · ${a[1]}</p><span class="small">가상 공고 · 실제 지원 링크 없음</span></div>`).join(''):'<p>선택 조건에 맞는 예시 공고가 없습니다. 전체 공고 보기를 눌러 확인하세요.</p>';}
   connectJobLinks(window.collectedJobs || []);
 function save(){const data={name:document.getElementById('nickname').value,field:document.getElementById('field').value,region:document.getElementById('region').value};localStorage.setItem('gangsahub_demo',JSON.stringify(data));document.getElementById('status').textContent='저장되었습니다. 아래에서 맞춤 예시 공고를 확인하세요.';render();connectJobLinks(window.collectedJobs || []);document.getElementById('list').scrollIntoView({behavior:'smooth'});}
-function reset(){document.getElementById('field').value='';document.getElementById('region').value='';render();}
+function reset(){document.getElementById('field').value='';document.getElementById('region').value='';ads.splice(0, ads.length, ...(window.collectedJobs || []).map(job => ['광주·전남', '기타', job.title]));render();}
 try{const d=JSON.parse(localStorage.getItem('gangsahub_demo')||'{}');if(d.name)document.getElementById('nickname').value=d.name;if(d.field)document.getElementById('field').value=d.field;if(d.region)document.getElementById('region').value=d.region;}catch(e){}render();
 fetch('jobs.json')
   .then(response => {
