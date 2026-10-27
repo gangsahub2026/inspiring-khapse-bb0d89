@@ -113,11 +113,8 @@ try {
 $('field').addEventListener('change', render);
 $('region').addEventListener('change', render);
 $('results').textContent = '모집공고를 불러오는 중입니다…';
-fetch('jobs.json', {cache: 'no-store'})
-  .then(response => {
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.json();
-  })
+Promise.all(['jobs.json', 'verified_jobs.json'].map(file => fetch(file, {cache: 'no-store'}).then(response => { if (!response.ok) throw new Error(file); return response.json(); }))).then(data => data.flatMap(item => Array.isArray(item) ? item : (item.jobs || [])))
+  
   .then(data => {
     const records = Array.isArray(data) ? data : (Array.isArray(data.jobs) ? data.jobs : []);
     jobs = records.map(normalize).filter(job => job.title);
