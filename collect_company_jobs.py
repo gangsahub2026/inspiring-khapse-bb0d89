@@ -52,10 +52,10 @@ for keyword in KEYWORDS:
 
             if not title or not link:
                 continue
-
+            print("검색된 제목:", title)   
             if not any(word in title for word in ["강사", "강의"]):
                 continue
-
+            
             if not any(word in title for word in ["모집", "채용", "위촉"]):
                 continue
 
