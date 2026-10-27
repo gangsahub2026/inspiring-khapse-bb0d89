@@ -44,7 +44,7 @@ for keyword in KEYWORDS:
 
         with urllib.request.urlopen(request, timeout=20) as response:
             root = ET.fromstring(response.read())
-
+        print("RSS 검색 결과 수:", len(root.findall(".//item")), "건 / 검색어:", keyword)
         for item in root.findall(".//item"):
             title = (item.findtext("title") or "").strip()
             link = (item.findtext("link") or "").strip()
