@@ -117,7 +117,7 @@ Promise.all(['jobs.json', 'verified_jobs.json'].map(file => fetch(file, {cache: 
   
   .then(data => {
     const records = Array.isArray(data) ? data : (Array.isArray(data.jobs) ? data.jobs : []);
-    jobs = records.map(normalize).filter(job => job.title);
+    jobs = records.map(normalize).filter(job => job.title).sort((a, b) => Number(b.field === 'AI 활용교육') - Number(a.field === 'AI 활용교육'));
     render();
   })
   .catch(error => {
