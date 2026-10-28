@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>강사허브 | 전국의 강의 기회가 모이는 곳</title>
+<style>
+:root{font-family:system-ui,'Malgun Gothic',sans-serif;color:#18304a}body{margin:0;background:#f4f7fb}
+header{background:#174c7e;color:white;padding:52px 20px;text-align:center}h1{font-size:40px;margin:0 0 12px}header p{margin:7px}
+main{max-width:850px;margin:30px auto;padding:0 18px}.card{background:white;border-radius:15px;padding:25px;margin:20px 0;box-shadow:0 3px 12px #1232}
+button{background:#174c7e;color:white;border:0;border-radius:9px;padding:12px 19px;cursor:pointer;margin:5px}
+label{display:block;margin:14px 0 6px;font-weight:600}input,select{padding:11px;width:100%;max-width:400px;border:1px solid #aab6c5;border-radius:8px;box-sizing:border-box}
+.item{padding:15px;border-bottom:1px solid #e3e9ef}.item:last-child{border:0}
+.small{font-size:13px;color:#637386}a{color:#174c7e}footer{text-align:center;padding:20px;color:#667}
+</style></head>
+<body><header><h1>강사허브</h1><p>전국의 강의 기회가 모이는 곳</p><p>나에게 맞는 강사 모집공고를 놓치지 마세요</p></header>
+<main><div class="card" style="text-align:center"><button onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">강사 등록하기</button><button onclick="document.getElementById('list').scrollIntoView({behavior:'smooth'})">모집공고 보기</button></div>
+<section class="card" id="register"><h2>강사 등록하기</h2><p class="small">시험용: 입력 정보는 현재 사용하는 브라우저에만 저장됩니다. 서버 회원가입은 아닙니다.</p>
+<label for="nickname">강사 별명</label><input id="nickname" placeholder="예: 테스트강사">
+<label for="field">전문 분야</label><select id="field"><option value="">전체 분야</option><option>리더십·소통</option><option>청렴·윤리</option><option>인권·복지</option><option>취업·진로</option><option>CS·친절</option></select>
+<label for="region">활동 지역</label><select id="region"><option value="">전국</option><option>광주·전남</option><option>서울·경기</option><option>전북</option><option>제주</option><option>부산·경남</option></select><br>
+<button onclick="save()">내 관심 분야 저장</button><p id="status" role="status"></p></section>
+<section class="card" id="real-notice">
+<h2>실제 모집공고 1건</h2>
+<p class="small">공식 교육청 게시판에 게시된 공고입니다. 지원 전 기관에서 마감 여부와 자격요건을 확인하세요.</p>
+<div class="item">
+<strong>경덕중학교 전일제강사 채용 공고(체육)</strong>
+<p>기관: 경덕중학교 · 지역: 충북 · 분야: 체육</p>
+<p>게시일: 2026년 10월 13일 · 게시판 표기 마감일: 2026년 10월 22일</p>
+<p class="small">리더십·소통 등 현재 선택한 관심 분야와 무관하게 표시되는 실제 공고 연결 시범입니다.</p>
+<a href="https://after.cbe.go.kr/cbe/na/ntt/selectNttList.do?bbsId=1798&amp;mi=11716" target="_blank" rel="noopener noreferrer">충청북도교육청 공식 공고 게시판에서 확인하기 ↗</a>
+</div></section>
+<section class="card" id="list"><h2>모집공고 보기</h2><p class="small">아래 공고는 jobs.json에서 불러옵니다. 지원 전 원문에서 모집 여부와 자격요건을 확인하세요.</p>
+<button onclick="reset()">전체 공고 보기</button><div id="results"></div></section></main><footer>강사허브 시범 서비스 · 문자 알림 미연결 · 공고는 제공된 데이터 기준</footer>
+<script>
+const $ = id => document.getElementById(id);
+let jobs = [];
+
+function getText(job, keys) {
+  for (const key of keys) {
+    const value = job && job[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return '';
+}
+function normalize(job) {
+  if (typeof job === 'string') return {title: job, url: '', region: '', field: '', agency: '', deadline: ''};
+  return {
+    title: getText(job, ['제목', '공고명', 'title', 'name', 'subject']),
+    url: getText(job, ['url', 'link', 'source_url', 'original_url']),
+    region: getText(job, ['지역', 'region', 'location', 'area']),
+    field: getText(job, ['분야', 'field', 'category', 'subject_area']),
+    agency: getText(job, ['기관', '원천', 'agency', 'organization', 'institution']),
+    deadline: getText(job, ['마감일', 'deadline', 'end_date', 'closing_date'])
+  };
+}
+function render() {
+  const f = $('field').value;
+  const r = $('region').value;
+  const filtered = jobs.filter(job =>
+    (!f || !job.field || job.field.includes(f) || f.includes(job.field)) &&
+    (!r || !job.region || job.region.includes(r) || r.includes(job.region))
+  );
+  const results = $('results');
+  results.replaceChildren();
+  if (!filtered.length) {
+    const p = document.createElement('p');
+    p.textContent = jobs.length ? '선택 조건에 맞는 공고가 없습니다. 전체 공고 보기를 눌러주세요.' : '표시할 수집 공고가 없습니다.';
+    results.appendChild(p);
+    return;
+  }
+  for (const job of filtered) {
+    const item = document.createElement('div');
+    item.className = 'item';
+    const heading = document.createElement('strong');
+    heading.textContent = job.title || '제목 없는 공고';
+    item.appendChild(heading);
+    const info = document.createElement('p');
+    info.textContent = [job.agency, job.region, job.field, job.deadline && `마감: ${job.deadline}`].filter(Boolean).join(' · ') || '지역·분야 정보 미등록';
+    item.appendChild(info);
+    if (job.url && /^https?:\/\//i.test(job.url)) {
+      const link = document.createElement('a');
+      link.href = job.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = '원문 공고 확인하기 ↗';
+      item.appendChild(link);
+    } else {
+      const note = document.createElement('span');
+      note.className = 'small';
+      note.textContent = '원문 링크 미등록 · 지원 전 공식 기관에서 확인하세요';
+      item.appendChild(note);
+    }
+    results.appendChild(item);
+  }
+}
+function save() {
+  const data = {name: $('nickname').value, field: $('field').value, region: $('region').value};
+  try { localStorage.setItem('gangsahub_demo', JSON.stringify(data)); }
+  catch (error) { console.warn('브라우저 저장 실패:', error); }
+  $('status').textContent = '관심 분야를 이 브라우저에 저장했습니다.';
+  render();
+  $('list').scrollIntoView({behavior: 'smooth'});
+}
+function reset() {
+  $('field').value = '';
+  $('region').value = '';
+  render();
+}
+try {
+  const data = JSON.parse(localStorage.getItem('gangsahub_demo') || '{}');
+  if (data.name) $('nickname').value = data.name;
+  if (data.field) $('field').value = data.field;
+  if (data.region) $('region').value = data.region;
+} catch (error) { console.warn('저장된 설정 읽기 실패:', error); }
+$('field').addEventListener('change', render);
+$('region').addEventListener('change', render);
+$('results').textContent = '모집공고를 불러오는 중입니다…';
+Promise.all(['jobs.json', 'verified_jobs.json'].map(file => fetch(file, {cache: 'no-store'}).then(response => { if (!response.ok) throw new Error(file); return response.json(); }))).then(data => data.flatMap(item => Array.isArray(item) ? item : (item.jobs || [])))
+  
+  .then(data => {
+    const records = Array.isArray(data) ? data : (Array.isArray(data.jobs) ? data.jobs : []);
+    jobs = records.map(normalize).filter(job => job.title).sort((a, b) => Number(b.field === 'AI 활용교육') - Number(a.field === 'AI 활용교육'));
+    render();
+  })
+  .catch(error => {
+    console.error('공고 불러오기 오류:', error);
+    $('results').textContent = '공고를 불러오지 못했습니다. jobs.json 파일과 배포 상태를 확인해 주세요.';
+  });
+</script></body></html>index-backup.html
