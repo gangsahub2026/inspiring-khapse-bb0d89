@@ -57,7 +57,7 @@ function render() {
   const r = $('region').value;
     const filtered = jobs.filter(job => {
     const fieldMatch = f.length === 0 || f.some(selected =>
-      !job.field || selected.includes(job.field) ||
+  selected.includes(job.field) ||
       job.field.includes(selected.split('·')[0])
     );
     const regionMatch = !r || !job.region ||
