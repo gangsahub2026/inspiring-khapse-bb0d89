@@ -56,7 +56,7 @@ function render() {
  const f = Array.from(document.querySelectorAll('input[name="jobField"]:checked')).map(el => el.value);
   const r = $('region').value;
   const filtered = jobs.filter(job =>
- (f.length === 0 || f.some(field => !job.field || job.field.includes(field) || field.includes(job.field.split('·')[0].trim())) &&
+ (f.length === 0 || f.some(field => !job.field || job.field.includes(field) || field.includes(job.field.split('·')[0].trim()))) &&
     (!r || !job.region || job.region.includes(r) || r.includes(job.region))
   );
   const results = $('results');
