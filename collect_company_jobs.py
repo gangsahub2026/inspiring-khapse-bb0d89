@@ -12,6 +12,8 @@ KEYWORDS = [
     "신입사원 교육 강사 모집",
     "리더십 소통 CS 강사 모집",
     "기업교육 협력강사 모집",
+    "CS 친절교육 프리랜서 강사 모집",
+    "고객응대 서비스교육 외부강사 모집",
 ]
 
 # 교과 교사 채용 등 제외
@@ -80,7 +82,7 @@ for keyword in KEYWORDS:
                 "url": link,
                 "agency": "검색 결과 - 원문 확인 필요",
                 "region": "",
-                "field": "기업교육",
+                "field": "CS·친절·서비스" if any(word in title.lower() for word in ["cs", "친절", "고객응대", "서비스교육"]) else "기업교육",
                 "posted": posted,
                 "deadline": "",
                 "type": "company",
